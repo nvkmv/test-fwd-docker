@@ -1,0 +1,45 @@
+version: '3.2'
+
+services:
+  db:
+    image: postgres:alpine
+    container_name: postgres-nextcloud
+    networks:
+      nextcloud:
+        ipv4_address: 172.16.230.10
+    restart: always
+    volumes:
+      - db-nextcloud:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    
+  app:
+    image: nextcloud:latest
+    networks:
+      nextcloud:
+        ipv4_address: 172.16.230.20
+    container_name: nextcloud
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+    depends_on:
+      - db
+
+volumes:
+  db-nextcloud:
+  nextcloud:
+
+networks:
+  nextcloud:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.230.0/24"
+

@@ -1,0 +1,48 @@
+version: '3.9'
+
+volumes:
+  wordpress:
+  db:
+
+networks:
+  wordpress-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+
+services:
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress-app
+    restart: always
+    ports:
+      - 51080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      wordpress-net:
+        ipv4_address: 172.16.238.10
+
+  db:
+    image: mysql:8.0
+    container_name: wordpress-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress 
+      MYSQL_USER: wordpress 
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      wordpress-net:
+        ipv4_address: 172.16.238.11
+
+

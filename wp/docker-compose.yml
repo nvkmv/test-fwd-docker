@@ -18,7 +18,7 @@ services:
     container_name: wordpress-app
     restart: always
     ports:
-      - 51080:80
+      - "51080:80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
